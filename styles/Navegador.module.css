@@ -1,0 +1,12 @@
+.navegador {
+    background-color: crimson;
+    color: #fff;
+    padding: 30px;
+    margin: 10px;
+    border-radius: 8px;
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    -ms-border-radius: 8px;
+    -o-border-radius: 8px;
+    cursor: pointer;
+}
