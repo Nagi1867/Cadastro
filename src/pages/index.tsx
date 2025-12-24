@@ -2,6 +2,7 @@ import Link from "next/link";
 import Layout from "../components/Layout";
 import Tabela from "../components/Tabela";
 import Cliente from "../core/Cliente";
+import Botao from "../components/Botao";
 
 
 export default function Home() {
@@ -23,6 +24,10 @@ export default function Home() {
   return (
     <div className="flex h-screen justify-center items-center bg-gradient-to-r from-purple-500 to-blue-600 text-white">
       <Layout titulo="Cadastro Titulo">
+        <div className="flex justify-end">
+          <Botao cor="green" className="mb-4">Novo Cliente</Botao>
+        </div>
+
         <Tabela clientes={clientes} clienteSelecionado={clienteSelecionado} clienteExcluido={clienteExcluido}></Tabela>
       </Layout>
     </div>
