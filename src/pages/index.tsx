@@ -4,51 +4,73 @@ import Tabela from "../components/Tabela";
 import Cliente from "../core/Cliente";
 import Botao from "../components/Botao";
 import Formulario from "../components/Formulario";
-import { useState } from "react";
-
+import { useEffect, useState } from "react";
+import ClienteRepositorio from "../core/ClienteRepositorio";
+import ColecaoCliente from "../backend/db/ColecaoCliente";
 
 export default function Home() {
-  const[cliente, setCliente] = useState<Cliente>(Cliente.vazio())
-  const [visivel, setVisivel] = useState<'tabela' | 'form'>('tabela')
-  
-  const clientes = [
-    new Cliente('Ana', 34, '1'),
-    new Cliente('Bia', 45, '2'),
-    new Cliente('Pedro', 23, '3'),
-    new Cliente('Carlos', 54, '4')
-  ]
+  const repo: ClienteRepositorio = new ColecaoCliente();
+  const [cliente, setCliente] = useState<Cliente>(Cliente.vazio());
+  const [clientes, setClientes] = useState<Cliente[]>([]);
+  const [visivel, setVisivel] = useState<"tabela" | "form">("tabela");
+
+  useEffect(obterTodos, []);
+
+  function obterTodos() {
+    repo.obterTodos().then((clientes) => {
+      setClientes(clientes);
+      setVisivel("tabela");
+    });
+  }
 
   function clienteSelecionado(cliente: Cliente) {
-    setCliente(cliente)
-    setVisivel('form')
+    setCliente(cliente);
+    setVisivel("form");
   }
 
   function clienteExcluido(cliente: Cliente) {
-
+    repo.excluir(cliente);
+    obterTodos()
   }
 
   function novoCliente() {
-    setCliente(Cliente.vazio())
-    setVisivel('form')
+    setCliente(Cliente.vazio());
+    setVisivel("form");
   }
 
-  function salvarCliente(cliente: Cliente) {
-    setVisivel('tabela')
+  async function salvarCliente(cliente: Cliente) {
+    await repo.salvar(cliente);
+    obterTodos()
+    setVisivel("tabela");
   }
 
   return (
     <div className="flex h-screen justify-center items-center bg-gradient-to-r from-purple-500 to-blue-600 text-white">
       <Layout titulo="Cadastro Titulo">
-        {visivel === 'tabela' ? (
+        {visivel === "tabela" ? (
           <>
             <div className="flex justify-end">
-              <Botao cor="green" className="mb-4 hover:cursor-pointer" onClick={novoCliente}>Novo Cliente</Botao>
+              <Botao
+                cor="green"
+                className="mb-4 hover:cursor-pointer"
+                onClick={novoCliente}
+              >
+                Novo Cliente
+              </Botao>
             </div>
 
-            <Tabela clientes={clientes} clienteSelecionado={clienteSelecionado} clienteExcluido={clienteExcluido}></Tabela>
+            <Tabela
+              clientes={clientes}
+              clienteSelecionado={clienteSelecionado}
+              clienteExcluido={clienteExcluido}
+            ></Tabela>
           </>
         ) : (
-          <Formulario cliente={cliente} cancelado={() => setVisivel('tabela')}/>
+          <Formulario
+            cliente={cliente}
+            clienteMudou={salvarCliente}
+            cancelado={() => setVisivel("tabela")}
+          />
         )}
       </Layout>
     </div>
