@@ -10,7 +10,7 @@ import {
   SnapshotOptions
 } from "firebase/firestore"
 
-import { db } from "../config"
+import { db } from "./config"
 import Cliente from "../../core/Cliente"
 import ClienteRepositorio from "../../core/ClienteRepositorio"
 
